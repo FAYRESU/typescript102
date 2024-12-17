@@ -1,175 +1,203 @@
-"use strict";
-class Customer {
-    constructor(name, address) {
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var Customer = /** @class */ (function () {
+    function Customer(name, address) {
         this.name = name;
         this.address = address;
     }
-    getInfo() {
+    Customer.prototype.getInfo = function () {
         return "Name: " + this.name + "\nAddress: " + this.address;
-    }
-}
-class Order {
-    constructor(customer, date, status) {
+    };
+    return Customer;
+}());
+var Order = /** @class */ (function () {
+    function Order(customer, date, status) {
         this.orderDetails = [];
         this.payment = new Cash(0, 0);
         this.customer = customer;
         this.date = date;
         this.status = status;
     }
-    calcSubtotal() {
-        let subtotal = 0;
-        for (let i = 0; i < this.orderDetails.length; i++) {
+    Order.prototype.calcSubtotal = function () {
+        var subtotal = 0;
+        for (var i = 0; i < this.orderDetails.length; i++) {
             subtotal = subtotal + this.orderDetails[i].calcSubTotal();
         }
         return subtotal;
-    }
-    calcTax() {
-        let vat = 0;
-        for (let i = 0; i < this.orderDetails.length; i++) {
+    };
+    Order.prototype.calcTax = function () {
+        var vat = 0;
+        for (var i = 0; i < this.orderDetails.length; i++) {
             vat = vat + this.orderDetails[i].calcTax();
         }
         return vat;
-    }
-    calcTotal() {
+    };
+    Order.prototype.calcTotal = function () {
         return this.calcSubtotal() + this.calcTax();
-    }
-    calcTotalWeight() {
-        let weight = 0;
-        for (let i = 0; i < this.orderDetails.length; i++) {
+    };
+    Order.prototype.calcTotalWeight = function () {
+        var weight = 0;
+        for (var i = 0; i < this.orderDetails.length; i++) {
             weight = weight + this.orderDetails[i].calcWeight();
         }
         return weight;
-    }
-    addOrderDetails(orderDetails) {
+    };
+    Order.prototype.addOrderDetails = function (orderDetails) {
         this.orderDetails.push(orderDetails);
-    }
-    payOrder(payment) {
+    };
+    Order.prototype.payOrder = function (payment) {
         this.payment = payment;
-    }
-    getPayment() {
+    };
+    Order.prototype.getPayment = function () {
         return this.payment;
-    }
-    printOrderDetails() {
-        for (let i = 0; i < this.orderDetails.length; i++) {
+    };
+    Order.prototype.printOrderDetails = function () {
+        for (var i = 0; i < this.orderDetails.length; i++) {
             this.orderDetails[i].printDetail();
         }
-    }
-}
-class OrderDetail {
-    constructor(item, quantity, taxStatus) {
+    };
+    return Order;
+}());
+var OrderDetail = /** @class */ (function () {
+    function OrderDetail(item, quantity, taxStatus) {
         this.item = item;
         this.quantity = quantity;
         this.taxStatus = taxStatus;
     }
-    calcSubTotal() {
+    OrderDetail.prototype.calcSubTotal = function () {
         return this.quantity * this.item.getPriceForQuantity();
-    }
-    calcWeight() {
+    };
+    OrderDetail.prototype.calcWeight = function () {
         return this.quantity * this.item.getShippingWeight();
-    }
-    calcTax() {
+    };
+    OrderDetail.prototype.calcTax = function () {
         if (this.taxStatus === "not included") {
             return this.quantity * this.item.getTax();
         }
         return 0;
-    }
-    printDetail() {
-        console.log(this.item.getName() + "\t" + this.quantity + "(ชิ้น)\t" + this.calcSubTotal + "฿");
-    }
-}
-class Item {
-    constructor(shippingWeight, description, price) {
+    };
+    OrderDetail.prototype.printDetail = function () {
+        console.log(this.item.getName() + "\t" + this.quantity + "(ชิ้น)\t" + this.calcSubTotal() + "฿");
+    };
+    return OrderDetail;
+}());
+var Item = /** @class */ (function () {
+    function Item(shippingWeight, description, price) {
         this.shippingWeight = shippingWeight;
         this.price = price;
         this.description = description;
     }
-    getPriceForQuantity() {
+    Item.prototype.getPriceForQuantity = function () {
         return this.price;
-    }
-    getTax() {
+    };
+    Item.prototype.getTax = function () {
         return this.price * 0.07;
-    }
-    getShippingWeight() {
+    };
+    Item.prototype.getShippingWeight = function () {
         return this.shippingWeight;
-    }
-    inStock() {
+    };
+    Item.prototype.inStock = function () {
         return true;
-    }
-    getName() {
+    };
+    Item.prototype.getName = function () {
         return this.description;
-    }
-    getInfo() {
+    };
+    Item.prototype.getInfo = function () {
         return "Name:" + this.description + ", Price:" + this.price + "฿, Weigth:" + this.shippingWeight + " kg.";
-    }
-}
-class Payment {
-    constructor(amount) {
+    };
+    return Item;
+}());
+var Payment = /** @class */ (function () {
+    function Payment(amount) {
         this.amount = amount;
     }
-    getAmount() {
+    Payment.prototype.getAmount = function () {
         return this.amount;
+    };
+    return Payment;
+}());
+var Check = /** @class */ (function (_super) {
+    __extends(Check, _super);
+    function Check(name, bankID, amount) {
+        var _this = _super.call(this, amount) || this;
+        _this.name = name;
+        _this.bankID = bankID;
+        return _this;
     }
-}
-class Check extends Payment {
-    constructor(name, bankID, amount) {
-        super(amount);
-        this.name = name;
-        this.bankID = bankID;
+    Check.prototype.authorized = function () {
+    };
+    return Check;
+}(Payment));
+var Credit = /** @class */ (function (_super) {
+    __extends(Credit, _super);
+    function Credit(number, type, amount, expDate) {
+        var _this = _super.call(this, amount) || this;
+        _this.number = number;
+        _this.type = type;
+        _this.expDate = expDate;
+        return _this;
     }
-    authorized() {
+    Credit.prototype.authorized = function () {
+    };
+    return Credit;
+}(Payment));
+var Cash = /** @class */ (function (_super) {
+    __extends(Cash, _super);
+    function Cash(amount, cashTendered) {
+        var _this = _super.call(this, amount) || this;
+        _this.cashTendered = cashTendered;
+        return _this;
     }
-}
-class Credit extends Payment {
-    constructor(number, type, amount, expDate) {
-        super(amount);
-        this.number = number;
-        this.type = type;
-        this.expDate = expDate;
-    }
-    authorized() {
-    }
-}
-class Cash extends Payment {
-    constructor(amount, cashTendered) {
-        super(amount);
-        this.cashTendered = cashTendered;
-    }
-    getCashTendered() {
+    Cash.prototype.getCashTendered = function () {
         return this.cashTendered;
-    }
-    getChange() {
+    };
+    Cash.prototype.getChange = function () {
         return this.cashTendered - this.getAmount();
-    }
-}
+    };
+    return Cash;
+}(Payment));
 //Create object
 //customer1
-const customer1 = new Customer("Choke Dee", "85 Malaiman rd, Nakphon Pathom");
+var customer1 = new Customer("Choke Dee", "85 Malaiman rd, Nakphon Pathom");
 console.log(customer1.getInfo());
 //Item
-const item1 = new Item(1.5, "Lotus's water", 15);
+var item1 = new Item(1.5, "Lotus's water", 15);
 console.log(item1.getInfo());
-const item2 = new Item(0.05, "Lays", 30);
+var item2 = new Item(0.05, "Lays", 30);
 console.log(item2.getInfo());
-const item3 = new Item(0.10, "MAma", 6);
+var item3 = new Item(0.10, "mama", 6);
 console.log(item3.getInfo());
 //Order
-const order1 = new Order(customer1, "16/12/2567", "in progress");
+var order1 = new Order(customer1, "16/12/2567", "in progress");
 //orderdetail
-const orderdetail1 = new OrderDetail(item1, 8, "not included");
-const orderdetail2 = new OrderDetail(item2, 10, "not included");
-const orderdetail3 = new OrderDetail(item3, 50, "not included");
+var orderdetail1 = new OrderDetail(item1, 8, "not included");
+var orderdetail2 = new OrderDetail(item2, 10, "not included");
+var orderdetail3 = new OrderDetail(item3, 50, "not included");
 //orderdetail > Order
 order1.addOrderDetails(orderdetail1);
 order1.addOrderDetails(orderdetail2);
 order1.addOrderDetails(orderdetail3);
-const amount = order1.calcTotal();
+var amount = order1.calcTotal();
 //Payment
-const cash = new Cash(amount, 1000);
-// order1.printOrderDetails();
-console.log("\nOrder Details");
+var cash = new Cash(amount, 1000);
+order1.printOrderDetails();
+// console.log("\nOrder Details");
 order1.payOrder(cash);
-console.log("Subtoatal: " + order1.calcSubtotal());
-console.log("VAT: " + order1.calcTax());
-console.log("total: " + order1.getPayment().getAmount());
+// console.log("Subtoatal: "+ order1.calcSubtotal());
+console.log("Vat: " + (order1.calcSubtotal)() + "฿");
+console.log("Total: " + order1.getPayment().getCashTendered());
 console.log("Recieve: " + order1.getPayment().getCashTendered());
-console.log("Change:" + order1.getPayment().getChange());
+console.log("Change:" + order1.getPayment().getChange().toFixed(2) + "฿");
